@@ -17,6 +17,7 @@ class HhAPI(BaseAPI):
         self.__params = {"text": "", "page": 0, "per_page": 100}
 
     def get_employer_id(self, query: str) -> Any:
+        """Получаем id работников"""
         self.__params["text"] = query
         response = requests.get(url=self.__url_employer, params=self.__params)  # type: ignore
 
@@ -27,9 +28,11 @@ class HhAPI(BaseAPI):
 
     @property
     def url_employer(self) -> str:
+        """Ссылка на API работников"""
         return self.__url_employer
 
     def get_vacancies_by_employer_id(self, query: Any = None) -> Any:
+        """Получаем вакансии по id работника"""
         if query:
             self.__params["employer_id"] = query
             response = requests.get(url=self.__url, params=self.__params)  # type: ignore
@@ -44,4 +47,5 @@ class HhAPI(BaseAPI):
 
     @property
     def url(self) -> str:
+        """Ссылка на API вакансий"""
         return self.__url

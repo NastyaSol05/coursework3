@@ -19,6 +19,7 @@ class DBManager:
 
     @staticmethod
     def __connect_db(dbname: str, user: str, password: str, host: str, port: str) -> Any:
+        """Создаёт подключение к PostgreSQL"""
         return psycopg2.connect(dbname=dbname, user=user, password=password, host=host, port=port)
 
     def create_database(self) -> None:
@@ -69,6 +70,7 @@ class DBManager:
         self.__connection.commit()
 
     def fill_table_employer(self, employers: dict) -> None:
+        """Заполняет таблицу работников"""
         for employer in employers.items():
             query = "INSERT INTO employers (id, employer_name) VALUES (%s, %s)"
             self.__cursor.execute(query, employer)
@@ -99,6 +101,7 @@ class DBManager:
         return self.__cursor.fetchall()
 
     def get_all_vacancies(self) -> Any:
+        """Возвращает все вакансии"""
         self.__cursor.execute(
             """
             SELECT employers.employer_name, vacancies_name, salary, link FROM vacancies
@@ -108,6 +111,7 @@ class DBManager:
         return self.__cursor.fetchall()
 
     def get_avg_salary(self) -> Any:
+        """Возвращает средний доход компаний"""
         self.__cursor.execute(
             """
             SELECT AVG(salary) AS avg_salary FROM vacancies
@@ -116,6 +120,7 @@ class DBManager:
         return self.__cursor.fetchone()[0]
 
     def get_vacancies_with_higher_salary(self) -> Any:
+        """Возвращает вакансии с доходом выше среднего дохода"""
         self.__cursor.execute(
             """
             SELECT * FROM vacancies
@@ -125,11 +130,14 @@ class DBManager:
         return self.__cursor.fetchall()
 
     def get_vacancies_with_keyword(self, keyword: str) -> Any:
+        """Возвращает вакансии с указанным ключевым словом"""
         self.__cursor.execute(f"SELECT * FROM vacancies WHERE vacancies_name LIKE '%{keyword}%'")
         return self.__cursor.fetchall()
 
     def close_connection(self) -> None:
+        """Закрывает подключение к БД"""
         self.__connection.close()
 
     def close_cursor(self) -> None:
+        """Закрывает курсор"""
         self.__cursor.close()

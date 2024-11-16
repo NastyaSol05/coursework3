@@ -6,6 +6,7 @@ class Vacancy:
 
     @staticmethod
     def parse_salary(salary: Any) -> Any:
+        """Парсит зарплату вакансии"""
         new_salary = None
         if isinstance(salary, dict):
             if salary is not None:
