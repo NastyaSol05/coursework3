@@ -1,6 +1,6 @@
 from typing import Any
 
-import requests
+import requests  # type: ignore
 
 from src.baseapi import BaseAPI
 
@@ -13,11 +13,25 @@ class HhAPI(BaseAPI):
 
     def __init__(self) -> None:
         self.__url = "https://api.hh.ru/vacancies"
+        self.__url_employer = "https://api.hh.ru/employers"
         self.__params = {"text": "", "page": 0, "per_page": 100}
 
-    def get_vacancies(self, query: Any = None) -> Any:
+    def get_employer_id(self, query: str) -> Any:
+        self.__params["text"] = query
+        response = requests.get(url=self.__url_employer, params=self.__params)  # type: ignore
+
+        response.raise_for_status()
+        if response.status_code != 200:
+            raise "Не удалось подключиться к HeadHunter"  # type: ignore
+        return int(response.json()["items"][0]["id"])
+
+    @property
+    def url_employer(self) -> str:
+        return self.__url_employer
+
+    def get_vacancies_by_employer_id(self, query: Any = None) -> Any:
         if query:
-            self.__params["text"] = query
+            self.__params["employer_id"] = query
             response = requests.get(url=self.__url, params=self.__params)  # type: ignore
         else:
             response = requests.get(self.__url)
